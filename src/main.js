@@ -1,9 +1,9 @@
 import { Color } from "./scene/color.js";
-import { Camera } from "./rendering/camera.js";
+import { Camera } from "./scene/camera.js";
 import { Light } from "./lighting/light.js";
-import { createObjectList } from "./rendering/object-list.js";
-import { Renderer } from "./rendering/renderer.js";
-import { createSceneView } from "./rendering/scene-view.js";
+import { RaytracingRenderer } from "./raytracing/renderer.js";
+import { createObjectList } from "./ui/object-list.js";
+import { createSceneView } from "./ui/scene-view.js";
 import { Scene } from "./scene/scene.js";
 import { Sphere } from "./scene/sphere.js";
 import { Vector3 } from "./math/vector3.js";
@@ -24,7 +24,7 @@ scene.addLight(Light.ambient(0.2));
 scene.addLight(Light.point(0.6, new Vector3(2, 1, 0)));
 scene.addLight(Light.directional(0.2, new Vector3(1, 4, 4)));
 
-const renderer = new Renderer(canvas, camera, scene);
+const renderer = new RaytracingRenderer(canvas, camera, scene);
 renderer.render();
 createSceneView(document.getElementById("scene"), scene, camera, canvas.width, canvas.height);
 createObjectList(document.getElementById("objets"), scene.objects);

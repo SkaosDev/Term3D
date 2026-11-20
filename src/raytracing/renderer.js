@@ -1,6 +1,8 @@
-import { computeLighting } from "../lighting/lighting.js";
+import { intersectSphere } from "./intersections.js";
+import { computeLighting } from "./lighting.js";
+import { createRayGenerator } from "./ray-generator.js";
 
-class Renderer {
+class RaytracingRenderer {
     constructor(canvas, camera, scene) {
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
@@ -13,7 +15,7 @@ class Renderer {
         const { width, height } = this.canvas;
         const halfWidth = width / 2;
         const halfHeight = height / 2;
-        const getRayDirection = this.camera.createRayGenerator(width);
+        const getRayDirection = createRayGenerator(this.camera, width);
 
         for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
@@ -24,7 +26,7 @@ class Renderer {
                 let closestObject = null;
 
                 for (const object of this.scene.objects) {
-                    const distance = object.intersect(this.camera.position, direction);
+                    const distance = intersectSphere(object, this.camera.position, direction);
                     if (distance !== null && distance < closestDistance) {
                         closestDistance = distance;
                         closestObject = object;
@@ -61,4 +63,4 @@ class Renderer {
     }
 }
 
-export { Renderer };
+export { RaytracingRenderer };
