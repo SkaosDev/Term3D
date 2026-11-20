@@ -5,7 +5,7 @@ But the goal is to make it work in a terminal, using only ASCII characters.
 
 Start the server with the following command:
 ```bash
-python3 -m http.server # a la racine
+python3 -m http.server
 ```
 
 References:
