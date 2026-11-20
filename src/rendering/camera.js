@@ -1,4 +1,4 @@
-import { Vector3 } from "./vector3.js";
+import { Vector3 } from "../math/vector3.js";
 
 class Camera {
     constructor(position, target, viewportWidth = 1, viewportDistance = 1) {

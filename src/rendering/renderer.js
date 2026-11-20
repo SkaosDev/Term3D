@@ -1,4 +1,4 @@
-import { computeLighting } from "./lighting.js";
+import { computeLighting } from "../lighting/lighting.js";
 
 class Renderer {
     constructor(canvas, camera, scene) {

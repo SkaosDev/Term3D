@@ -1,10 +1,10 @@
-import { Color } from "./lib/color.js";
-import { Camera } from "./lib/camera.js";
-import { Light } from "./lib/light.js";
-import { Renderer } from "./lib/renderer.js";
-import { Scene } from "./lib/scene.js";
-import { Sphere } from "./lib/sphere.js";
-import { Vector3 } from "./lib/vector3.js";
+import { Color } from "./scene/color.js";
+import { Camera } from "./rendering/camera.js";
+import { Light } from "./lighting/light.js";
+import { Renderer } from "./rendering/renderer.js";
+import { Scene } from "./scene/scene.js";
+import { Sphere } from "./scene/sphere.js";
+import { Vector3 } from "./math/vector3.js";
 
 const canvas = document.getElementById("ecran");
 const camera = new Camera(
