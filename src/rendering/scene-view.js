@@ -5,15 +5,19 @@ function createSceneView(container, scene, camera) {
     view.background = new THREE.Color(0x111827);
 
     const cameraView = new THREE.PerspectiveCamera(45, 1, 0.1, 10);
-    cameraView.position.set(7, 5, 9);
-    cameraView.lookAt(0, 0, 3);
+    cameraView.position.set(camera.position.x + 7, camera.position.y + 5, camera.position.z + 9);
+    cameraView.lookAt(camera.position.x, camera.position.y, camera.position.z);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.append(renderer.domElement);
 
-    view.add(new THREE.GridHelper(12, 12, 0x64748b, 0x334155));
-    view.add(new THREE.AxesHelper(2));
+    const grid = new THREE.GridHelper(12, 12, 0x64748b, 0x334155);
+    grid.position.set(camera.position.x, camera.position.y, camera.position.z);
+    view.add(grid);
+    const axes = new THREE.AxesHelper(2);
+    axes.position.set(camera.position.x, camera.position.y, camera.position.z);
+    view.add(axes);
     view.add(new THREE.AmbientLight(0xffffff, 1.5));
 
     const cameraMarker = new THREE.PerspectiveCamera(45, 1, 0.1, 8);
