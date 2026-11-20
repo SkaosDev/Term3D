@@ -26,5 +26,5 @@ scene.addLight(Light.directional(0.2, new Vector3(1, 4, 4)));
 
 const renderer = new Renderer(canvas, camera, scene);
 renderer.render();
-createSceneView(document.getElementById("scene"), scene, camera);
+createSceneView(document.getElementById("scene"), scene, camera, canvas.width, canvas.height);
 createObjectList(document.getElementById("objets"), scene.objects);

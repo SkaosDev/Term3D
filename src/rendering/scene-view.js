@@ -18,20 +18,37 @@ function addAxisLabel(scene, label, color, position) {
     scene.add(labelSprite);
 }
 
-function createSceneView(container, scene, camera) {
+function createSceneView(container, scene, camera, renderWidth, renderHeight) {
     const view = new THREE.Scene();
     view.background = new THREE.Color(0x111827);
-
-    const cameraView = new THREE.OrthographicCamera(-6, 6, 3.5, -3.5, 0.1, 100);
-    cameraView.position.set(camera.position.x + 8, camera.position.y + 8, camera.position.z + 8);
-    cameraView.lookAt(camera.position.x, camera.position.y, camera.position.z);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.append(renderer.domElement);
 
+    const bounds = new THREE.Box3();
+    for (const object of scene.objects) {
+        const center = new THREE.Vector3(object.center.x, object.center.y, object.center.z);
+        bounds.expandByPoint(center.clone().addScalar(object.radius));
+        bounds.expandByPoint(center.clone().subScalar(object.radius));
+    }
+    for (const light of scene.lights) {
+        if (light.type !== "point") continue;
+        bounds.expandByPoint(new THREE.Vector3(light.vector.x, light.vector.y, light.vector.z));
+    }
+    bounds.expandByPoint(new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z));
+    const center = bounds.getCenter(new THREE.Vector3());
+    const size = bounds.getSize(new THREE.Vector3());
+    const viewHeight = Math.max(size.length(), 1) * 1.1;
+    const cameraView = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, viewHeight * 4);
+    cameraView.position.copy(center).add(new THREE.Vector3(1, 1, 1).normalize().multiplyScalar(viewHeight * 1.5));
+    cameraView.lookAt(center);
+
     const axes = new THREE.AxesHelper(3);
     axes.position.set(camera.position.x, camera.position.y, camera.position.z);
+    axes.traverse((part) => {
+        if (part.material) part.material.depthTest = false;
+    });
     view.add(axes);
     const origin = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
     addAxisLabel(view, "X", "#ff5555", origin.clone().add(new THREE.Vector3(3.35, 0, 0)));
@@ -44,24 +61,40 @@ function createSceneView(container, scene, camera) {
         camera.target.y - camera.position.y,
         camera.target.z - camera.position.z
     ).normalize();
-    view.add(new THREE.ArrowHelper(viewDirection, origin, 1.5, 0xffffff, 0.25, 0.15));
-    const cameraMarker = new THREE.Mesh(
-        new THREE.SphereGeometry(0.12, 12, 8),
-        new THREE.MeshBasicMaterial({ color: 0xffffff })
-    );
-    cameraMarker.position.copy(origin);
-    view.add(cameraMarker);
+    const directionArrow = new THREE.ArrowHelper(viewDirection, origin, 1.5, 0xffffff, 0.25, 0.15);
+    directionArrow.traverse((part) => {
+        if (part.material) part.material.depthTest = false;
+    });
+    view.add(directionArrow);
+    const viewportWidth = camera.viewportWidth;
+    const worldUp = new THREE.Vector3(0, 1, 0);
+    const screenRight = worldUp.clone().cross(viewDirection).normalize();
+    const screenUp = viewDirection.clone().cross(screenRight).normalize();
+    const viewportHeight = viewportWidth * renderHeight / renderWidth;
+    const viewportCenter = origin.clone().addScaledVector(viewDirection, camera.viewportDistance);
+    const corners = [
+        viewportCenter.clone().addScaledVector(screenRight, -viewportWidth / 2).addScaledVector(screenUp, -viewportHeight / 2),
+        viewportCenter.clone().addScaledVector(screenRight, viewportWidth / 2).addScaledVector(screenUp, -viewportHeight / 2),
+        viewportCenter.clone().addScaledVector(screenRight, viewportWidth / 2).addScaledVector(screenUp, viewportHeight / 2),
+        viewportCenter.clone().addScaledVector(screenRight, -viewportWidth / 2).addScaledVector(screenUp, viewportHeight / 2)
+    ];
+    const framePoints = [];
+    for (let index = 0; index < corners.length; index++) {
+        framePoints.push(...origin.toArray(), ...corners[index].toArray());
+        framePoints.push(...corners[index].toArray(), ...corners[(index + 1) % corners.length].toArray());
+    }
+    const frameGeometry = new THREE.BufferGeometry();
+    frameGeometry.setAttribute("position", new THREE.Float32BufferAttribute(framePoints, 3));
+    view.add(new THREE.LineSegments(
+        frameGeometry,
+        new THREE.LineBasicMaterial({ color: 0xffffff, depthTest: false })
+    ));
 
     for (const object of scene.objects) {
         const color = new THREE.Color(object.color.r / 255, object.color.g / 255, object.color.b / 255);
         const material = new THREE.MeshStandardMaterial({ color, roughness: 0.65 });
-        const displayedRadius = Math.min(object.radius, 0.8);
-        const sphere = new THREE.Mesh(new THREE.SphereGeometry(displayedRadius, 24, 16), material);
+        const sphere = new THREE.Mesh(new THREE.SphereGeometry(object.radius, 24, 16), material);
         sphere.position.set(object.center.x, object.center.y, object.center.z);
-        if (object.radius > displayedRadius) {
-            const directionToCamera = origin.clone().sub(sphere.position).normalize();
-            sphere.position.addScaledVector(directionToCamera, object.radius - displayedRadius);
-        }
         view.add(sphere);
     }
 
@@ -70,7 +103,7 @@ function createSceneView(container, scene, camera) {
             const pointLight = new THREE.PointLight(0xfff0b0, light.intensity * 4);
             pointLight.position.set(light.vector.x, light.vector.y, light.vector.z);
             const marker = new THREE.Mesh(
-                new THREE.SphereGeometry(0.12, 12, 8),
+                new THREE.OctahedronGeometry(0.16),
                 new THREE.MeshBasicMaterial({ color: 0xffd43b })
             );
             marker.position.copy(pointLight.position);
@@ -95,13 +128,12 @@ function createSceneView(container, scene, camera) {
         const width = container.clientWidth;
         const height = container.clientHeight;
         if (!width || !height) return;
-        const viewHeight = 8;
-        cameraView.left = -viewHeight * (width / height) / 2;
-        cameraView.right = viewHeight * (width / height) / 2;
+        const aspect = width / height;
+        cameraView.left = -viewHeight * aspect / 2;
+        cameraView.right = viewHeight * aspect / 2;
         cameraView.top = viewHeight / 2;
         cameraView.bottom = -viewHeight / 2;
         renderer.setSize(width, height, false);
-        cameraView.aspect = width / height;
         cameraView.updateProjectionMatrix();
         renderer.render(view, cameraView);
     };
