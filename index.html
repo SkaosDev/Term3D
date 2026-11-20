@@ -1,7 +1,100 @@
 <!DOCTYPE html>
-<html>
-<body style="margin:0; min-height:100vh; background: darkgray; display:flex; align-items:center; justify-content:center">
-<canvas style="border: 2px solid black; background: white" id="ecran" width="1280" height="720"></canvas>
-<script type="module" src="src/main.js"></script>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rendu 3D</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 32px;
+            background: #e5e7eb;
+            color: #111827;
+            font: 16px system-ui, sans-serif;
+        }
+
+        main {
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .views {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        section {
+            min-width: 0;
+        }
+
+        h2 {
+            margin: 0 0 10px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            border: 1px solid #9ca3af;
+            background: #111827;
+        }
+
+        #ecran {
+            background: #141820;
+        }
+
+        .object-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .object-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .swatch {
+            width: 14px;
+            height: 14px;
+            flex: 0 0 14px;
+            border-radius: 50%;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                padding: 16px;
+            }
+
+            .views {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="views">
+            <section>
+                <h2>Vue caméra</h2>
+                <canvas id="ecran" width="1280" height="720"></canvas>
+            </section>
+            <section>
+                <h2>Repère 3D</h2>
+                <canvas id="scene" width="800" height="450"></canvas>
+            </section>
+        </div>
+        <section>
+            <h2>Objets</h2>
+            <ul id="objets" class="object-list"></ul>
+        </section>
+    </main>
+    <script type="module" src="src/main.js"></script>
 </body>
 </html>

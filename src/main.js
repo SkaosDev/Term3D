@@ -1,7 +1,9 @@
 import { Color } from "./scene/color.js";
 import { Camera } from "./rendering/camera.js";
 import { Light } from "./lighting/light.js";
+import { createObjectList } from "./rendering/object-list.js";
 import { Renderer } from "./rendering/renderer.js";
+import { createSceneView } from "./rendering/scene-view.js";
 import { Scene } from "./scene/scene.js";
 import { Sphere } from "./scene/sphere.js";
 import { Vector3 } from "./math/vector3.js";
@@ -24,3 +26,5 @@ scene.addLight(Light.directional(0.2, new Vector3(1, 4, 4)));
 
 const renderer = new Renderer(canvas, camera, scene);
 renderer.render();
+createSceneView(document.getElementById("scene"), scene, camera);
+createObjectList(document.getElementById("objets"), scene.objects);
