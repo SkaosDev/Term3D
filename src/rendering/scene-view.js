@@ -4,18 +4,15 @@ function createSceneView(container, scene, camera) {
     const view = new THREE.Scene();
     view.background = new THREE.Color(0x111827);
 
-    const cameraView = new THREE.PerspectiveCamera(45, 1, 0.1, 10);
-    cameraView.position.set(camera.position.x + 7, camera.position.y + 5, camera.position.z + 9);
+    const cameraView = new THREE.OrthographicCamera(-6, 6, 3.5, -3.5, 0.1, 100);
+    cameraView.position.set(camera.position.x + 8, camera.position.y + 8, camera.position.z + 8);
     cameraView.lookAt(camera.position.x, camera.position.y, camera.position.z);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.append(renderer.domElement);
 
-    const grid = new THREE.GridHelper(12, 12, 0x64748b, 0x334155);
-    grid.position.set(camera.position.x, camera.position.y, camera.position.z);
-    view.add(grid);
-    const axes = new THREE.AxesHelper(2);
+    const axes = new THREE.AxesHelper(3);
     axes.position.set(camera.position.x, camera.position.y, camera.position.z);
     view.add(axes);
     view.add(new THREE.AmbientLight(0xffffff, 1.5));
@@ -26,19 +23,12 @@ function createSceneView(container, scene, camera) {
     view.add(new THREE.CameraHelper(cameraMarker));
 
     for (const object of scene.objects) {
+        if (object.radius > 10) continue;
         const color = new THREE.Color(object.color.r / 255, object.color.g / 255, object.color.b / 255);
         const material = new THREE.MeshStandardMaterial({ color, roughness: 0.65 });
-
-        if (object.radius > 10) {
-            const ground = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), material);
-            ground.rotation.x = -Math.PI / 2;
-            ground.position.y = object.center.y + object.radius;
-            view.add(ground);
-        } else {
-            const sphere = new THREE.Mesh(new THREE.SphereGeometry(object.radius, 24, 16), material);
-            sphere.position.set(object.center.x, object.center.y, object.center.z);
-            view.add(sphere);
-        }
+        const sphere = new THREE.Mesh(new THREE.SphereGeometry(object.radius, 24, 16), material);
+        sphere.position.set(object.center.x, object.center.y, object.center.z);
+        view.add(sphere);
     }
 
     for (const light of scene.lights) {
@@ -58,6 +48,11 @@ function createSceneView(container, scene, camera) {
         const width = container.clientWidth;
         const height = container.clientHeight;
         if (!width || !height) return;
+        const viewHeight = 8;
+        cameraView.left = -viewHeight * (width / height) / 2;
+        cameraView.right = viewHeight * (width / height) / 2;
+        cameraView.top = viewHeight / 2;
+        cameraView.bottom = -viewHeight / 2;
         renderer.setSize(width, height, false);
         cameraView.aspect = width / height;
         cameraView.updateProjectionMatrix();
