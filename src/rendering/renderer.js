@@ -35,7 +35,13 @@ class Renderer {
                 if (closestObject !== null) {
                     const point = this.camera.position.add(direction.multiply(closestDistance));
                     const normal = point.subtract(closestObject.center).normalize();
-                    const intensity = computeLighting(point, normal, this.scene.lights);
+                    const intensity = computeLighting(
+                        point,
+                        normal,
+                        direction.multiply(-1),
+                        closestObject.specular,
+                        this.scene.lights
+                    );
                     color = closestObject.color.multiply(intensity);
                 }
 

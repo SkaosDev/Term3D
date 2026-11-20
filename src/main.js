@@ -13,10 +13,10 @@ const camera = new Camera(
 );
 const scene = new Scene(new Color(20, 24, 34));
 
-scene.add(new Sphere(new Vector3(0, -1, 3), 1, new Color(255, 0, 0)));
-scene.add(new Sphere(new Vector3(-2, 0, 4), 1, new Color(0, 255, 0)));
-scene.add(new Sphere(new Vector3(2, 0, 4), 1, new Color(0, 0, 255)));
-scene.add(new Sphere(new Vector3(0, -5001, 0), 5000, new Color(255, 255, 0)));
+scene.add(new Sphere(new Vector3(0, -1, 3), 1, new Color(255, 0, 0), 500));
+scene.add(new Sphere(new Vector3(-2, 0, 4), 1, new Color(0, 255, 0), 10));
+scene.add(new Sphere(new Vector3(2, 0, 4), 1, new Color(0, 0, 255), 500));
+scene.add(new Sphere(new Vector3(0, -5001, 0), 5000, new Color(255, 255, 0), 1000));
 
 scene.addLight(Light.ambient(0.2));
 scene.addLight(Light.point(0.6, new Vector3(2, 1, 0)));

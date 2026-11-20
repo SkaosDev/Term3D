@@ -1,6 +1,7 @@
-function computeLighting(point, normal, lights) {
+function computeLighting(point, normal, viewDirection, specular, lights) {
     let intensity = 0;
     const unitNormal = normal.normalize();
+    const unitViewDirection = viewDirection.normalize();
 
     for (const light of lights) {
         if (light.type === "ambient") {
@@ -11,10 +12,19 @@ function computeLighting(point, normal, lights) {
         const direction = light.type === "point"
             ? light.vector.subtract(point)
             : light.vector;
-        const cosine = unitNormal.dot(direction.normalize());
+        const unitDirection = direction.normalize();
+        const cosine = unitNormal.dot(unitDirection);
 
         if (cosine > 0) {
             intensity += light.intensity * cosine;
+        }
+
+        if (specular !== -1) {
+            const reflection = unitNormal.multiply(2 * cosine).subtract(unitDirection);
+            const reflectionViewCosine = reflection.dot(unitViewDirection);
+            if (reflectionViewCosine > 0) {
+                intensity += light.intensity * Math.pow(reflectionViewCosine, specular);
+            }
         }
     }
 
