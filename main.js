@@ -1,5 +1,6 @@
 import { Color } from "./lib/color.js";
 import { Camera } from "./lib/camera.js";
+import { Light } from "./lib/light.js";
 import { Renderer } from "./lib/renderer.js";
 import { Scene } from "./lib/scene.js";
 import { Sphere } from "./lib/sphere.js";
@@ -12,9 +13,14 @@ const camera = new Camera(
 );
 const scene = new Scene(new Color(20, 24, 34));
 
-scene.add(new Sphere(new Vector3(0, -1, 3), 1, new Color(220, 55, 55)));
-scene.add(new Sphere(new Vector3(-2, 0, 4), 1, new Color(55, 180, 90)));
-scene.add(new Sphere(new Vector3(2, 0, 4), 1, new Color(65, 110, 220)));
+scene.add(new Sphere(new Vector3(0, -1, 3), 1, new Color(255, 0, 0)));
+scene.add(new Sphere(new Vector3(-2, 0, 4), 1, new Color(0, 255, 0)));
+scene.add(new Sphere(new Vector3(2, 0, 4), 1, new Color(0, 0, 255)));
+scene.add(new Sphere(new Vector3(0, -5001, 0), 5000, new Color(255, 255, 0)));
+
+scene.addLight(Light.ambient(0.2));
+scene.addLight(Light.point(0.6, new Vector3(2, 1, 0)));
+scene.addLight(Light.directional(0.2, new Vector3(1, 4, 4)));
 
 const renderer = new Renderer(canvas, camera, scene);
 renderer.render();
