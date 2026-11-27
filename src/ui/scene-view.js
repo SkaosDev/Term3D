@@ -1,5 +1,6 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 import { Vector3 } from "../math/vector3.js";
+import { Sphere } from "../scene/sphere.js";
 
 function rotateByCamera(camera, x, y, z) {
     const rotated = camera.rotation.multiply(new Vector3(x, y, z));
@@ -23,6 +24,32 @@ function addAxisLabel(scene, label, color, position) {
     labelSprite.scale.set(0.45, 0.45, 1);
     labelSprite.renderOrder = 10;
     scene.add(labelSprite);
+}
+
+function createSphereMesh(sphere, color, viewHeight) {
+    const isLarge = sphere.radius > viewHeight;
+    const material = isLarge
+        ? new THREE.MeshBasicMaterial({
+            color,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.18,
+            depthWrite: false
+        })
+        : new THREE.MeshStandardMaterial({ color, roughness: 0.65, depthTest: false });
+    const mesh = new THREE.Mesh(new THREE.SphereGeometry(sphere.radius, 24, 16), material);
+    mesh.position.set(sphere.center.x, sphere.center.y, sphere.center.z);
+    if (isLarge) mesh.renderOrder = -1;
+    return mesh;
+}
+
+function createTriangleMesh(triangle, color) {
+    const vertices = [triangle.a, triangle.b, triangle.c].flatMap(({ x, y, z }) => [x, y, z]);
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+    geometry.computeVertexNormals();
+    const material = new THREE.MeshStandardMaterial({ color, roughness: 0.65, side: THREE.DoubleSide, depthTest: false });
+    return new THREE.Mesh(geometry, material);
 }
 
 function createSceneView(container, scene, camera, renderWidth, renderHeight) {
@@ -88,20 +115,7 @@ function createSceneView(container, scene, camera, renderWidth, renderHeight) {
     for (const object of scene.objects) {
         const { r, g, b } = object.material.color;
         const color = new THREE.Color(r / 255, g / 255, b / 255);
-        const isLarge = object.radius > viewHeight;
-        const material = isLarge
-            ? new THREE.MeshBasicMaterial({
-                color,
-                wireframe: true,
-                transparent: true,
-                opacity: 0.18,
-                depthWrite: false
-            })
-            : new THREE.MeshStandardMaterial({ color, roughness: 0.65, depthTest: false });
-        const sphere = new THREE.Mesh(new THREE.SphereGeometry(object.radius, 24, 16), material);
-        sphere.position.set(object.center.x, object.center.y, object.center.z);
-        if (isLarge) sphere.renderOrder = -1;
-        view.add(sphere);
+        view.add(object instanceof Sphere ? createSphereMesh(object, color, viewHeight) : createTriangleMesh(object, color));
     }
 
     for (const light of scene.lights) {

@@ -9,7 +9,9 @@ function traceRay(scene, origin, direction, minDistance, maxDistance, depth) {
     const { object, distance } = hit;
     const { material } = object;
     const point = origin.add(direction.multiply(distance));
-    const normal = surfaceNormal(object, point);
+    const outwardNormal = surfaceNormal(object, point);
+    const isBackFace = outwardNormal.dot(direction) > 0;
+    const normal = isBackFace ? outwardNormal.multiply(-1) : outwardNormal;
     const view = direction.multiply(-1);
     const localColor = material.color.multiply(computeLighting(point, normal, view, material.specular, scene));
 
