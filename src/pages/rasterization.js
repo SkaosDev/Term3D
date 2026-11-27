@@ -5,6 +5,7 @@ import { Color } from "../scene/color.js";
 import { Line } from "../scene/line.js";
 import { Scene } from "../scene/scene.js";
 import { createObjectList } from "../ui/object-list.js";
+import { createPlaneView } from "../ui/plane-view.js";
 
 function renderRasterizationPage(page) {
     const canvas = new Canvas(page.querySelector(".screen"));
@@ -14,6 +15,7 @@ function renderRasterizationPage(page) {
     scene.add(new Line(new Point(-50, -200), new Point(60, 240), new Color(255, 160, 0)));
 
     new RasterizationRenderer(canvas, scene).render();
+    createPlaneView(page.querySelector(".view"), scene, canvas.width, canvas.height);
     createObjectList(page.querySelector(".object-list"), scene.objects);
 }
 
