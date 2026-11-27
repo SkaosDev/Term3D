@@ -4,7 +4,8 @@ import { Sphere } from "../scene/sphere.js";
 
 const TRIANGLE_STYLES = {
     wireframe: "filaire",
-    filled: "plein"
+    filled: "plein",
+    shaded: "ombré"
 };
 
 function formatPoint({ x, y, z }) {

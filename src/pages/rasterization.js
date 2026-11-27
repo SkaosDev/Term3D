@@ -18,6 +18,7 @@ function renderRasterizationPage(page) {
     scene.add(new Line(new Point(-470, -200), new Point(-360, 240), new Color(255, 160, 0)));
     scene.add(new CanvasTriangle(new Point(-200, -250), new Point(200, 50), new Point(20, 250), green, "filled"));
     scene.add(new CanvasTriangle(new Point(-200, -250), new Point(200, 50), new Point(20, 250), white, "wireframe"));
+    scene.add(new CanvasTriangle(new Point(220, -250, 0.3), new Point(620, 50, 0.1), new Point(440, 250, 1), green, "shaded"));
 
     new RasterizationRenderer(canvas, scene).render();
     createPlaneView(page.querySelector(".view"), scene, canvas.width, canvas.height);
