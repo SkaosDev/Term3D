@@ -9,7 +9,7 @@ function traceRay(scene, origin, direction, minDistance, maxDistance) {
     const point = origin.add(direction.multiply(distance));
     const normal = point.subtract(object.center).normalize();
     const view = direction.multiply(-1);
-    return object.color.multiply(computeLighting(point, normal, view, object.specular, scene.lights));
+    return object.color.multiply(computeLighting(point, normal, view, object.specular, scene));
 }
 
 export { traceRay };

@@ -1,3 +1,5 @@
+const EPSILON = 0.001;
+
 function intersectSphere(sphere, origin, direction) {
     const offset = origin.subtract(sphere.center);
     const a = direction.dot(direction);
@@ -26,4 +28,4 @@ function closestIntersection(objects, origin, direction, minDistance, maxDistanc
     return closest;
 }
 
-export { closestIntersection };
+export { EPSILON, closestIntersection };
