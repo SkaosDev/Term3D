@@ -1,4 +1,5 @@
 import { Point } from "../math/point.js";
+import { Line } from "../scene/line.js";
 
 const FRAME_COLOR = "#6b7280";
 const X_AXIS_COLOR = "#ff5555";
@@ -12,6 +13,14 @@ function strokeSegment(context, [x0, y0], [x1, y1], color) {
     context.stroke();
 }
 
+function strokePolygon(context, points, color) {
+    context.strokeStyle = color;
+    context.beginPath();
+    for (const [x, y] of points) context.lineTo(x, y);
+    context.closePath();
+    context.stroke();
+}
+
 function fillDot(context, [x, y], radius, color) {
     context.fillStyle = color;
     context.beginPath();
@@ -22,6 +31,10 @@ function fillDot(context, [x, y], radius, color) {
 function fillLabel(context, text, [x, y], color) {
     context.fillStyle = color;
     context.fillText(text, x, y);
+}
+
+function verticesOf(object) {
+    return object instanceof Line ? [object.start, object.end] : [object.p0, object.p1, object.p2];
 }
 
 function createPlaneView(container, scene, width, height) {
@@ -53,12 +66,12 @@ function createPlaneView(container, scene, width, height) {
         fillLabel(context, "X", [right + gap, originY], X_AXIS_COLOR);
         fillLabel(context, "Y", [originX, top - gap], Y_AXIS_COLOR);
 
-        for (const line of scene.objects) {
-            const { r, g, b } = line.color;
+        for (const object of scene.objects) {
+            const { r, g, b } = object.color;
             const color = `rgb(${r}, ${g}, ${b})`;
-            strokeSegment(context, toScreen(line.start), toScreen(line.end), color);
-            fillDot(context, toScreen(line.start), 3 * ratio, color);
-            fillDot(context, toScreen(line.end), 3 * ratio, color);
+            const points = verticesOf(object).map(toScreen);
+            strokePolygon(context, points, color);
+            for (const point of points) fillDot(context, point, 3 * ratio, color);
         }
     };
 

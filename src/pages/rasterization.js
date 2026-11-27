@@ -1,6 +1,7 @@
 import { Canvas } from "../canvas/canvas.js";
 import { Point } from "../math/point.js";
 import { RasterizationRenderer } from "../rasterization/renderer.js";
+import { CanvasTriangle } from "../scene/canvas-triangle.js";
 import { Color } from "../scene/color.js";
 import { Line } from "../scene/line.js";
 import { Scene } from "../scene/scene.js";
@@ -10,9 +11,11 @@ import { createPlaneView } from "../ui/plane-view.js";
 function renderRasterizationPage(page) {
     const canvas = new Canvas(page.querySelector(".screen"));
     const scene = new Scene(new Color(20, 24, 34));
+    const white = new Color(255, 255, 255);
 
-    scene.add(new Line(new Point(-200, -100), new Point(240, 120), new Color(255, 255, 255)));
-    scene.add(new Line(new Point(-50, -200), new Point(60, 240), new Color(255, 160, 0)));
+    scene.add(new Line(new Point(-620, -100), new Point(-260, 120), white));
+    scene.add(new Line(new Point(-470, -200), new Point(-360, 240), new Color(255, 160, 0)));
+    scene.add(new CanvasTriangle(new Point(-200, -250), new Point(200, 50), new Point(20, 250), white, "wireframe"));
 
     new RasterizationRenderer(canvas, scene).render();
     createPlaneView(page.querySelector(".view"), scene, canvas.width, canvas.height);
