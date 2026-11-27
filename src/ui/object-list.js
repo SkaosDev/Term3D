@@ -1,4 +1,5 @@
 import { CanvasTriangle } from "../scene/canvas-triangle.js";
+import { Instance } from "../scene/instance.js";
 import { Line } from "../scene/line.js";
 import { Sphere } from "../scene/sphere.js";
 
@@ -17,6 +18,9 @@ function formatCanvasPoint({ x, y }) {
 }
 
 function describe(object, number) {
+    if (object instanceof Instance) {
+        return `${object.model.name} ${number} — position ${formatPoint(object.position)}, échelle ${object.scale}`;
+    }
     if (object instanceof Line) {
         return `Ligne ${number} — de ${formatCanvasPoint(object.start)} à ${formatCanvasPoint(object.end)}`;
     }
@@ -30,8 +34,15 @@ function describe(object, number) {
     return `Triangle ${number} — sommets ${formatPoint(object.a)}, ${formatPoint(object.b)}, ${formatPoint(object.c)}`;
 }
 
-function colorOf(object) {
-    return object.material ? object.material.color : object.color;
+function formatColor({ r, g, b }) {
+    return `rgb(${r}, ${g}, ${b})`;
+}
+
+function swatchOf(object) {
+    if (object instanceof Instance) {
+        return `conic-gradient(${object.model.triangles.map(({ color }) => formatColor(color)).join(", ")})`;
+    }
+    return formatColor(object.material ? object.material.color : object.color);
 }
 
 function createObjectList(element, objects) {
@@ -39,10 +50,9 @@ function createObjectList(element, objects) {
         const item = document.createElement("li");
         const swatch = document.createElement("span");
         const description = document.createElement("span");
-        const { r, g, b } = colorOf(object);
 
         swatch.className = "swatch";
-        swatch.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+        swatch.style.background = swatchOf(object);
         description.textContent = describe(object, index + 1);
         item.append(swatch, description);
         element.append(item);

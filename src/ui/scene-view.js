@@ -1,10 +1,15 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 import { Vector3 } from "../math/vector3.js";
+import { Instance } from "../scene/instance.js";
 import { Sphere } from "../scene/sphere.js";
 
 function rotateByCamera(camera, x, y, z) {
     const rotated = camera.rotation.multiply(new Vector3(x, y, z));
     return new THREE.Vector3(rotated.x, rotated.y, rotated.z);
+}
+
+function toThreeColor({ r, g, b }) {
+    return new THREE.Color(r / 255, g / 255, b / 255);
 }
 
 function addAxisLabel(scene, label, color, position) {
@@ -50,6 +55,27 @@ function createTriangleMesh(triangle, color) {
     geometry.computeVertexNormals();
     const material = new THREE.MeshStandardMaterial({ color, roughness: 0.65, side: THREE.DoubleSide, depthTest: false });
     return new THREE.Mesh(geometry, material);
+}
+
+function createInstanceWireframe(instance) {
+    const transform = instance.transform;
+    const vertices = instance.model.vertices.map((vertex) => transform.transformPoint(vertex));
+    const wireframe = new THREE.Group();
+
+    for (const { indices, color } of instance.model.triangles) {
+        const corners = indices.map((index) => vertices[index]);
+        const points = [...corners, corners[0]].map(({ x, y, z }) => new THREE.Vector3(x, y, z));
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        wireframe.add(new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: toThreeColor(color) })));
+    }
+
+    return wireframe;
+}
+
+function createObjectMesh(object, viewHeight) {
+    if (object instanceof Instance) return createInstanceWireframe(object);
+    if (object instanceof Sphere) return createSphereMesh(object, toThreeColor(object.material.color), viewHeight);
+    return createTriangleMesh(object, toThreeColor(object.material.color));
 }
 
 function createSceneView(container, scene, camera, renderWidth, renderHeight) {
@@ -113,9 +139,7 @@ function createSceneView(container, scene, camera, renderWidth, renderHeight) {
     view.add(viewportFrame);
 
     for (const object of scene.objects) {
-        const { r, g, b } = object.material.color;
-        const color = new THREE.Color(r / 255, g / 255, b / 255);
-        view.add(object instanceof Sphere ? createSphereMesh(object, color, viewHeight) : createTriangleMesh(object, color));
+        view.add(createObjectMesh(object, viewHeight));
     }
 
     for (const light of scene.lights) {
