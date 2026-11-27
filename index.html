@@ -52,18 +52,18 @@
             background: #111827;
         }
 
-        #ecran {
+        .screen {
             background: #141820;
         }
 
-        #scene {
+        .view {
             height: 320px;
             overflow: hidden;
             border: 1px solid #9ca3af;
             background: #111827;
         }
 
-        #scene canvas {
+        .view canvas {
             width: 100%;
             height: 100%;
         }
@@ -98,7 +98,7 @@
                 grid-template-columns: 1fr;
             }
 
-            #scene {
+            .view {
                 height: 280px;
             }
         }
@@ -106,19 +106,19 @@
 </head>
 <body>
     <main>
-        <div class="layout">
+        <div id="raytracing" class="layout">
             <section>
                 <h2>Vue caméra</h2>
-                <canvas id="ecran" width="1280" height="720"></canvas>
+                <canvas class="screen" width="1280" height="720"></canvas>
             </section>
             <div class="sidebar">
                 <section>
                     <h2>Repère 3D</h2>
-                    <div id="scene"></div>
+                    <div class="view"></div>
                 </section>
                 <section>
                     <h2>Objets</h2>
-                    <ul id="objets" class="object-list"></ul>
+                    <ul class="object-list"></ul>
                 </section>
             </div>
         </div>
