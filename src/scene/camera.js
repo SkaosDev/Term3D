@@ -1,7 +1,9 @@
+import { Matrix3 } from "../math/matrix3.js";
+
 class Camera {
-    constructor(position, target, viewportWidth = 1, viewportDistance = 1) {
+    constructor(position, rotation = Matrix3.identity(), viewportWidth = 1, viewportDistance = 1) {
         this.position = position;
-        this.target = target;
+        this.rotation = rotation;
         this.viewportWidth = viewportWidth;
         this.viewportDistance = viewportDistance;
     }

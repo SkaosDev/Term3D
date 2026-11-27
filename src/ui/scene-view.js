@@ -1,4 +1,10 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
+import { Vector3 } from "../math/vector3.js";
+
+function rotateByCamera(camera, x, y, z) {
+    const rotated = camera.rotation.multiply(new Vector3(x, y, z));
+    return new THREE.Vector3(rotated.x, rotated.y, rotated.z);
+}
 
 function addAxisLabel(scene, label, color, position) {
     const canvas = document.createElement("canvas");
@@ -47,11 +53,7 @@ function createSceneView(container, scene, camera, renderWidth, renderHeight) {
     addAxisLabel(view, "Z", "#5599ff", origin.clone().add(new THREE.Vector3(0, 0, 3.35)));
     view.add(new THREE.AmbientLight(0xffffff, 1.5));
 
-    const viewDirection = new THREE.Vector3(
-        camera.target.x - camera.position.x,
-        camera.target.y - camera.position.y,
-        camera.target.z - camera.position.z
-    ).normalize();
+    const viewDirection = rotateByCamera(camera, 0, 0, 1);
     const directionArrow = new THREE.ArrowHelper(viewDirection, origin, 1.5, 0xffffff, 0.25, 0.15);
     directionArrow.traverse((part) => {
         if (part.material) part.material.depthTest = false;
@@ -59,9 +61,8 @@ function createSceneView(container, scene, camera, renderWidth, renderHeight) {
     });
     view.add(directionArrow);
     const viewportWidth = camera.viewportWidth;
-    const worldUp = new THREE.Vector3(0, 1, 0);
-    const screenRight = worldUp.clone().cross(viewDirection).normalize();
-    const screenUp = viewDirection.clone().cross(screenRight).normalize();
+    const screenRight = rotateByCamera(camera, 1, 0, 0);
+    const screenUp = rotateByCamera(camera, 0, 1, 0);
     const viewportHeight = viewportWidth * renderHeight / renderWidth;
     const viewportCenter = origin.clone().addScaledVector(viewDirection, camera.viewportDistance);
     const corners = [
