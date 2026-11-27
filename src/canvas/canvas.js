@@ -6,6 +6,14 @@ class Canvas {
         this.image = this.context.createImageData(this.width, this.height);
     }
 
+    clear(color) {
+        for (let y = -this.height / 2; y < this.height / 2; y++) {
+            for (let x = -this.width / 2; x < this.width / 2; x++) {
+                this.putPixel(x, y, color);
+            }
+        }
+    }
+
     putPixel(x, y, color) {
         const column = this.width / 2 + Math.round(x);
         const row = this.height / 2 - Math.round(y) - 1;
