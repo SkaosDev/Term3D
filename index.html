@@ -18,11 +18,37 @@
             margin: 0 auto;
         }
 
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .tabs button {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #f9fafb;
+            color: inherit;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .tabs button[aria-selected="true"] {
+            border-color: #111827;
+            background: #111827;
+            color: #f9fafb;
+        }
+
         .layout {
             display: grid;
             grid-template-columns: minmax(0, 2.2fr) minmax(300px, 1fr);
             gap: 16px;
             align-items: start;
+        }
+
+        .layout[hidden] {
+            display: none;
         }
 
         .sidebar {
@@ -106,7 +132,11 @@
 </head>
 <body>
     <main>
-        <div id="raytracing" class="layout">
+        <nav class="tabs" role="tablist">
+            <button role="tab" data-page="raytracing">Raytracing</button>
+            <button role="tab" data-page="rasterization" aria-selected="true">Rasterization</button>
+        </nav>
+        <div id="raytracing" class="layout" hidden>
             <section>
                 <h2>Vue caméra</h2>
                 <canvas class="screen" width="1280" height="720"></canvas>
@@ -116,6 +146,18 @@
                     <h2>Repère 3D</h2>
                     <div class="view"></div>
                 </section>
+                <section>
+                    <h2>Objets</h2>
+                    <ul class="object-list"></ul>
+                </section>
+            </div>
+        </div>
+        <div id="rasterization" class="layout" hidden>
+            <section>
+                <h2>Canevas</h2>
+                <canvas class="screen" width="1280" height="720"></canvas>
+            </section>
+            <div class="sidebar">
                 <section>
                     <h2>Objets</h2>
                     <ul class="object-list"></ul>

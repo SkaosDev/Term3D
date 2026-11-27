@@ -1,14 +1,26 @@
+import { Line } from "../scene/line.js";
 import { Sphere } from "../scene/sphere.js";
 
 function formatPoint({ x, y, z }) {
     return `(${x}, ${y}, ${z})`;
 }
 
+function formatCanvasPoint({ x, y }) {
+    return `(${x}, ${y})`;
+}
+
 function describe(object, number) {
+    if (object instanceof Line) {
+        return `Ligne ${number} — de ${formatCanvasPoint(object.start)} à ${formatCanvasPoint(object.end)}`;
+    }
     if (object instanceof Sphere) {
         return `Sphère ${number} — centre ${formatPoint(object.center)}, rayon ${object.radius}`;
     }
     return `Triangle ${number} — sommets ${formatPoint(object.a)}, ${formatPoint(object.b)}, ${formatPoint(object.c)}`;
+}
+
+function colorOf(object) {
+    return object instanceof Line ? object.color : object.material.color;
 }
 
 function createObjectList(element, objects) {
@@ -16,7 +28,7 @@ function createObjectList(element, objects) {
         const item = document.createElement("li");
         const swatch = document.createElement("span");
         const description = document.createElement("span");
-        const { r, g, b } = object.material.color;
+        const { r, g, b } = colorOf(object);
 
         swatch.className = "swatch";
         swatch.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
