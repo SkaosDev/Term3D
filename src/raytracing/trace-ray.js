@@ -15,10 +15,24 @@ function traceRay(scene, origin, direction, minDistance, maxDistance, depth) {
     const view = direction.multiply(-1);
     const localColor = material.color.multiply(computeLighting(point, normal, view, material.specular, scene));
 
-    if (depth <= 0 || material.reflective <= 0) return localColor;
+    if (depth <= 0) return localColor;
 
-    const reflectedColor = traceRay(scene, point, view.reflect(normal), EPSILON, Infinity, depth - 1);
-    return localColor.multiply(1 - material.reflective).add(reflectedColor.multiply(material.reflective));
+    const reflection = view.reflect(normal);
+    let color = localColor;
+
+    if (material.reflective > 0) {
+        const reflectedColor = traceRay(scene, point, reflection, EPSILON, Infinity, depth - 1);
+        color = color.mix(reflectedColor, material.reflective);
+    }
+
+    if (material.transparency > 0) {
+        const ratio = isBackFace ? material.refractiveIndex : 1 / material.refractiveIndex;
+        const refraction = direction.refract(normal, ratio) ?? reflection;
+        const refractedColor = traceRay(scene, point, refraction, EPSILON, Infinity, depth - 1);
+        color = color.mix(refractedColor, material.transparency);
+    }
+
+    return color;
 }
 
 export { traceRay };

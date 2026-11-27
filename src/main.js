@@ -20,11 +20,13 @@ const green = new Material(new Color(0, 255, 0), 10, 0.4);
 const blue = new Material(new Color(0, 0, 255), 500, 0.3);
 const yellow = new Material(new Color(255, 255, 0), 1000, 0.5);
 const purple = new Material(new Color(160, 80, 255), 100, 0.3);
+const glass = new Material(new Color(255, 255, 255), 500, 0.1, 0.9, 1.5);
 
 scene.add(new Sphere(new Vector3(0, -1, 3), 1, red));
 scene.add(new Sphere(new Vector3(-2, 0, 4), 1, green));
 scene.add(new Sphere(new Vector3(2, 0, 4), 1, blue));
 scene.add(new Sphere(new Vector3(0, -5001, 0), 5000, yellow));
+scene.add(new Sphere(new Vector3(0.5, 0.4, 3.5), 0.5, glass));
 scene.add(new Triangle(new Vector3(0, -1, 8), new Vector3(-3, -1, 5), new Vector3(-1.5, 1.5, 6.5), purple));
 
 scene.addLight(Light.ambient(0.2));

@@ -13,6 +13,10 @@ class Color {
         return new Color(this.r + other.r, this.g + other.g, this.b + other.b);
     }
 
+    mix(other, amount) {
+        return this.multiply(1 - amount).add(other.multiply(amount));
+    }
+
     static add(a, b) {
         return new Color(a.r + b.r, a.g + b.g, a.b + b.b);
     }

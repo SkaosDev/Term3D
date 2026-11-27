@@ -33,6 +33,17 @@ class Vector3 {
         return normal.multiply(2 * normal.dot(this)).subtract(this);
     }
 
+    refract(normal, ratio) {
+        const incident = this.normalize();
+        const cosIncident = -normal.dot(incident);
+        const sinSquaredRefracted = ratio * ratio * (1 - cosIncident * cosIncident);
+
+        if (sinSquaredRefracted > 1) return null;
+
+        const cosRefracted = Math.sqrt(1 - sinSquaredRefracted);
+        return incident.multiply(ratio).add(normal.multiply(ratio * cosIncident - cosRefracted));
+    }
+
     normalize() {
         const length = Math.sqrt(this.dot(this));
         return length === 0 ? new Vector3(0, 0, 0) : this.multiply(1 / length);
