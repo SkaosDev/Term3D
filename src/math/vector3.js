@@ -29,6 +29,10 @@ class Vector3 {
         return this.x * other.x + this.y * other.y + this.z * other.z;
     }
 
+    reflect(normal) {
+        return normal.multiply(2 * normal.dot(this)).subtract(this);
+    }
+
     normalize() {
         const length = Math.sqrt(this.dot(this));
         return length === 0 ? new Vector3(0, 0, 0) : this.multiply(1 / length);

@@ -20,8 +20,7 @@ function computeLighting(point, normal, viewDirection, specular, lights) {
         }
 
         if (specular !== -1) {
-            const reflection = unitNormal.multiply(2 * cosine).subtract(unitDirection);
-            const reflectionViewCosine = reflection.dot(unitViewDirection);
+            const reflectionViewCosine = unitDirection.reflect(unitNormal).dot(unitViewDirection);
             if (reflectionViewCosine > 0) {
                 intensity += light.intensity * Math.pow(reflectionViewCosine, specular);
             }
