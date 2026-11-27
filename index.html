@@ -134,7 +134,8 @@
     <main>
         <nav class="tabs" role="tablist">
             <button role="tab" data-page="raytracing">Raytracing</button>
-            <button role="tab" data-page="rasterization" aria-selected="true">Rasterization</button>
+            <button role="tab" data-page="rasterization">Rasterization</button>
+            <button role="tab" data-page="projection" aria-selected="true">Projection</button>
         </nav>
         <div id="raytracing" class="layout" hidden>
             <section>
@@ -153,6 +154,22 @@
             </div>
         </div>
         <div id="rasterization" class="layout" hidden>
+            <section>
+                <h2>Canevas</h2>
+                <canvas class="screen" width="1280" height="720"></canvas>
+            </section>
+            <div class="sidebar">
+                <section>
+                    <h2>Repère 2D</h2>
+                    <div class="view"></div>
+                </section>
+                <section>
+                    <h2>Objets</h2>
+                    <ul class="object-list"></ul>
+                </section>
+            </div>
+        </div>
+        <div id="projection" class="layout" hidden>
             <section>
                 <h2>Canevas</h2>
                 <canvas class="screen" width="1280" height="720"></canvas>
