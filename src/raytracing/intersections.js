@@ -28,4 +28,9 @@ function closestIntersection(objects, origin, direction, minDistance, maxDistanc
     return closest;
 }
 
-export { EPSILON, closestIntersection };
+function hasIntersection(objects, origin, direction, minDistance, maxDistance) {
+    return objects.some((object) => intersectSphere(object, origin, direction)
+        .some((distance) => distance >= minDistance && distance <= maxDistance));
+}
+
+export { EPSILON, closestIntersection, hasIntersection };

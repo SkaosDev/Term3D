@@ -1,4 +1,4 @@
-import { EPSILON, closestIntersection } from "./intersections.js";
+import { EPSILON, hasIntersection } from "./intersections.js";
 
 function computeLighting(point, normal, viewDirection, specular, scene) {
     let intensity = 0;
@@ -15,9 +15,7 @@ function computeLighting(point, normal, viewDirection, specular, scene) {
         const direction = isPoint ? light.vector.subtract(point) : light.vector;
         const maxDistance = isPoint ? 1 : Infinity;
 
-        if (closestIntersection(scene.objects, point, direction, EPSILON, maxDistance) !== null) {
-            continue;
-        }
+        if (hasIntersection(scene.objects, point, direction, EPSILON, maxDistance)) continue;
 
         const unitDirection = direction.normalize();
         const cosine = unitNormal.dot(unitDirection);
