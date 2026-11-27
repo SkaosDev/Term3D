@@ -1,6 +1,5 @@
-import { intersectSphere } from "./intersections.js";
-import { computeLighting } from "./lighting.js";
 import { createRayGenerator } from "./ray-generator.js";
+import { traceRay } from "./trace-ray.js";
 
 class RaytracingRenderer {
     constructor(canvas, camera, scene) {
@@ -22,31 +21,7 @@ class RaytracingRenderer {
                 const canvasX = x + 0.5 - halfWidth;
                 const canvasY = halfHeight - y - 0.5;
                 const direction = getRayDirection(canvasX, canvasY);
-                let closestDistance = Infinity;
-                let closestObject = null;
-
-                for (const object of this.scene.objects) {
-                    const distance = intersectSphere(object, this.camera.position, direction);
-                    if (distance !== null && distance < closestDistance) {
-                        closestDistance = distance;
-                        closestObject = object;
-                    }
-                }
-
-                let color = this.scene.background;
-                if (closestObject !== null) {
-                    const point = this.camera.position.add(direction.multiply(closestDistance));
-                    const normal = point.subtract(closestObject.center).normalize();
-                    const intensity = computeLighting(
-                        point,
-                        normal,
-                        direction.multiply(-1),
-                        closestObject.specular,
-                        this.scene.lights
-                    );
-                    color = closestObject.color.multiply(intensity);
-                }
-
+                const color = traceRay(this.scene, this.camera.position, direction, 1, Infinity);
                 this.setPixel(x, y, color);
             }
         }
