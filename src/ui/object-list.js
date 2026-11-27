@@ -3,7 +3,8 @@ import { Line } from "../scene/line.js";
 import { Sphere } from "../scene/sphere.js";
 
 const TRIANGLE_STYLES = {
-    wireframe: "filaire"
+    wireframe: "filaire",
+    filled: "plein"
 };
 
 function formatPoint({ x, y, z }) {

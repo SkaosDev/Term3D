@@ -12,9 +12,11 @@ function renderRasterizationPage(page) {
     const canvas = new Canvas(page.querySelector(".screen"));
     const scene = new Scene(new Color(20, 24, 34));
     const white = new Color(255, 255, 255);
+    const green = new Color(0, 255, 0);
 
     scene.add(new Line(new Point(-620, -100), new Point(-260, 120), white));
     scene.add(new Line(new Point(-470, -200), new Point(-360, 240), new Color(255, 160, 0)));
+    scene.add(new CanvasTriangle(new Point(-200, -250), new Point(200, 50), new Point(20, 250), green, "filled"));
     scene.add(new CanvasTriangle(new Point(-200, -250), new Point(200, 50), new Point(20, 250), white, "wireframe"));
 
     new RasterizationRenderer(canvas, scene).render();

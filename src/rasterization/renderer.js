@@ -1,9 +1,11 @@
 import { Line } from "../scene/line.js";
+import { drawFilledTriangle } from "./draw-filled-triangle.js";
 import { drawLine } from "./draw-line.js";
 import { drawWireframeTriangle } from "./draw-wireframe-triangle.js";
 
 const drawTriangle = {
-    wireframe: drawWireframeTriangle
+    wireframe: drawWireframeTriangle,
+    filled: drawFilledTriangle
 };
 
 class RasterizationRenderer {
