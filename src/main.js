@@ -1,3 +1,4 @@
+import { Canvas } from "./canvas/canvas.js";
 import { Color } from "./scene/color.js";
 import { Camera } from "./scene/camera.js";
 import { Light } from "./lighting/light.js";
@@ -11,7 +12,7 @@ import { Triangle } from "./scene/triangle.js";
 import { Matrix3 } from "./math/matrix3.js";
 import { Vector3 } from "./math/vector3.js";
 
-const canvas = document.getElementById("ecran");
+const canvas = new Canvas(document.getElementById("ecran"));
 const camera = new Camera(new Vector3(3, 0, 1), Matrix3.rotationY(-45));
 const scene = new Scene(new Color(20, 24, 34));
 
