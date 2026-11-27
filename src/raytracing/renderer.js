@@ -1,6 +1,8 @@
 import { createRayGenerator } from "./ray-generator.js";
 import { traceRay } from "./trace-ray.js";
 
+const RECURSION_DEPTH = 3;
+
 class RaytracingRenderer {
     constructor(canvas, camera, scene) {
         this.canvas = canvas;
@@ -21,7 +23,7 @@ class RaytracingRenderer {
                 const canvasX = x + 0.5 - halfWidth;
                 const canvasY = halfHeight - y - 0.5;
                 const direction = getRayDirection(canvasX, canvasY);
-                const color = traceRay(this.scene, this.camera.position, direction, 1, Infinity);
+                const color = traceRay(this.scene, this.camera.position, direction, 1, Infinity, RECURSION_DEPTH);
                 this.setPixel(x, y, color);
             }
         }
