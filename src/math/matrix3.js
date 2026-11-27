@@ -10,6 +10,10 @@ class Matrix3 {
         return new Vector3(x, y, z);
     }
 
+    transpose() {
+        return new Matrix3(this.rows.map((_, column) => this.rows.map((row) => row[column])));
+    }
+
     static identity() {
         return new Matrix3([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
     }
