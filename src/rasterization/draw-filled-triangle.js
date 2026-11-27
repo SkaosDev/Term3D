@@ -1,12 +1,9 @@
-import { interpolate } from "./interpolate.js";
+import { triangleEdges } from "./triangle-edges.js";
 
 function drawFilledTriangle(canvas, p0, p1, p2, color) {
     [p0, p1, p2] = [p0, p1, p2].sort((a, b) => a.y - b.y);
 
-    const x01 = interpolate(p0.y, p0.x, p1.y, p1.x);
-    const x12 = interpolate(p1.y, p1.x, p2.y, p2.x);
-    const x02 = interpolate(p0.y, p0.x, p2.y, p2.x);
-    const x012 = [...x01.slice(0, -1), ...x12];
+    const [x02, x012] = triangleEdges(p0, p1, p2, "x");
 
     const middle = Math.floor(x012.length / 2);
     const [xLeft, xRight] = x02[middle] < x012[middle] ? [x02, x012] : [x012, x02];
