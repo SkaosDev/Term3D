@@ -86,7 +86,8 @@ function createSceneView(container, scene, camera, renderWidth, renderHeight) {
     view.add(viewportFrame);
 
     for (const object of scene.objects) {
-        const color = new THREE.Color(object.color.r / 255, object.color.g / 255, object.color.b / 255);
+        const { r, g, b } = object.material.color;
+        const color = new THREE.Color(r / 255, g / 255, b / 255);
         const isLarge = object.radius > viewHeight;
         const material = isLarge
             ? new THREE.MeshBasicMaterial({

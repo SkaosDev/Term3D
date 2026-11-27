@@ -6,15 +6,16 @@ function traceRay(scene, origin, direction, minDistance, maxDistance, depth) {
     if (hit === null) return scene.background;
 
     const { object, distance } = hit;
+    const { material } = object;
     const point = origin.add(direction.multiply(distance));
     const normal = point.subtract(object.center).normalize();
     const view = direction.multiply(-1);
-    const localColor = object.color.multiply(computeLighting(point, normal, view, object.specular, scene));
+    const localColor = material.color.multiply(computeLighting(point, normal, view, material.specular, scene));
 
-    if (depth <= 0 || object.reflective <= 0) return localColor;
+    if (depth <= 0 || material.reflective <= 0) return localColor;
 
     const reflectedColor = traceRay(scene, point, view.reflect(normal), EPSILON, Infinity, depth - 1);
-    return localColor.multiply(1 - object.reflective).add(reflectedColor.multiply(object.reflective));
+    return localColor.multiply(1 - material.reflective).add(reflectedColor.multiply(material.reflective));
 }
 
 export { traceRay };
