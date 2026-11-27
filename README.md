@@ -15,6 +15,6 @@ Rendering architecture:
 - `src/canvas/` contains the canvas shared by renderers, using centered coordinates with y pointing up.
 - `src/scene/` and `src/lighting/light.js` contain scene data shared by renderers.
 - `src/raytracing/` contains the ray tracing renderer and its ray generation, intersection, and shading algorithms.
-- `src/rasterization/` contains the rasterization renderer and its line and triangle drawing algorithms (wireframe, filled and shaded).
+- `src/rasterization/` contains the rasterization renderer, its line and triangle drawing algorithms (wireframe, filled and shaded) and the perspective projection of 3D vertices onto the canvas.
 - `src/pages/` builds the scene of each tab and renders it with its renderer.
 - `src/ui/` contains the tabs, scene previews and object list; these are not rendering backends.
